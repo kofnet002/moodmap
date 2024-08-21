@@ -22,13 +22,15 @@ export default function RootLayout({
   const header = (
     <header className={`p-4 sm:p-8 flex items-center justify-between gap-4`}>
       <Link href="/" className={`${fugaz.className} hover:cursor-pointer textGradient font-bold text-2xl`}>Moodmap</Link>
-      <div className="flex items-center justify-between">PLACEHOLDER CTA</div>
+      <Link href={"/dashboard"}>
+        <div className={`${fugaz.className} flex items-center justify-between`}>Dashboard</div>
+      </Link>
     </header>
   );
 
   const footer = (
-    <footer className="p-4 sm:p-8 grid place-items-center">
-      <p className={`${fugaz.className} text-pink-500`}>Created with 🩷</p>
+    <footer className={`${fugaz.className} p-4 sm:p-8 grid place-items-center`}>
+      <p className={`text-pink-500`}>Created with 🩷</p>
       &copy; {currentYear} Moodmap
     </footer>
   );

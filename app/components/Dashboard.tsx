@@ -48,7 +48,7 @@ const Dashboard: FC<PageProps> = () => {
                     )
                 })}
             </div>
-            <Calender />
+            <Calender demo />
         </div>
     )
 }
