@@ -1,7 +1,8 @@
 import { Fugaz_One } from "next/font/google";
 import { FC } from "react";
-import Button from "./Button";
 import Calender from "./Calendar";
+import { demoData } from "@/util";
+import CallToAction from "./CallToAction";
 
 interface PageProps { }
 
@@ -14,12 +15,8 @@ const Hero: FC<PageProps> = () => {
 
             <p className="text-lg sm:text-xl md:text-2xl text-center w-full mx-auto max-w-[600px]">Create your mood record and see how you feel on <span className="font-semibold">every day of the year.</span></p>
 
-            <div className="grid grid-cols-2 gap-4 w-fit mx-auto">
-                <Button text="Sign up" />
-                <Button text="Log in" dark />
-            </div>
-
-            <Calender />
+            <CallToAction />
+            <Calender demo completeData={demoData} />
         </div>
     )
 }

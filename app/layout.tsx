@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Fugaz_One, Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import { AuthProvider } from "./context/AuthContext";
+import Logout from "./components/Logout";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 const fugaz = Fugaz_One({ subsets: ["latin"], weight: "400" });
@@ -22,9 +26,7 @@ export default function RootLayout({
   const header = (
     <header className={`p-4 sm:p-8 flex items-center justify-between gap-4`}>
       <Link href="/" className={`${fugaz.className} hover:cursor-pointer textGradient font-bold text-2xl`}>Moodmap</Link>
-      <Link href={"/dashboard"}>
-        <div className={`${fugaz.className} flex items-center justify-between`}>Dashboard</div>
-      </Link>
+      <Logout />
     </header>
   );
 
@@ -37,10 +39,20 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <header>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossOrigin="anonymous" referrerPolicy="no-referrer" />
+      </header>
       <body className={`w-full max-w-[1000px] mx-auto text-sm sm:text-base min-h-screen flex flex-col text-slate-800 ${inter.className}`}>
-        {header}
-        {children}
-        {footer}
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
+        />
+        <AuthProvider>
+          {header}
+          {children}
+          <SpeedInsights />
+          {footer}
+        </AuthProvider>
       </body>
     </html>
   );
