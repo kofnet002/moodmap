@@ -50,9 +50,9 @@ export default function RootLayout({
         <AuthProvider>
           {header}
           {children}
-          <SpeedInsights />
           {footer}
         </AuthProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
