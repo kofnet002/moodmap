@@ -13,6 +13,17 @@ const fugaz = Fugaz_One({ subsets: ["latin"], weight: "400" });
 export const metadata: Metadata = {
   title: "Moodmap",
   description: "Track your daily mood everyday of the year",
+  openGraph: {
+    type: "website",
+    url: "https://mymoodmap.vercel.app",
+    siteName: "Moodmap",
+    images: [
+      {
+        url: "og.png",
+        alt: "Moodmap",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -38,7 +49,7 @@ export default function RootLayout({
   );
 
   return (
-    <html lang="en">
+    <html lang="en" data-theme="light">
       <header>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossOrigin="anonymous" referrerPolicy="no-referrer" />
       </header>

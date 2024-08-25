@@ -1,9 +1,7 @@
 import { FC } from "react";
 import type { Metadata } from "next";
 import Container from "../components/Container";
-import LoginPage from "../components/Login";
 import Dashboard from "../components/Dashboard";
-import { useAuth } from "../context/AuthContext";
 
 interface PageProps {
 }

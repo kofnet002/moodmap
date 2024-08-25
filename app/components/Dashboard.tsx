@@ -62,7 +62,7 @@ const Dashboard: FC<PageProps> = () => {
                 }
             }
         }
-        return { "num_days": total_number_of_days, "average_mood": sum_moods / total_number_of_days }
+        return { "num_days": total_number_of_days, "average_mood": (sum_moods / total_number_of_days).toFixed(1) }
     }
 
     const statuses: { [key: string]: number | string } = {
@@ -128,12 +128,12 @@ const Dashboard: FC<PageProps> = () => {
 
     return (
         <div className="flex flex-col flex-1 gap-8 sm:gap-12 md:gap-16">
-            <div className="grid grid-cols-3 bg-pink-50 text-pink-500 p-4 gap-4">
+            <div className="grid grid-cols-3 bg-pink-50 text-pink-500 sm:p-3 p-4">
                 {Object.keys(statuses).map((status: string, statusIndex: number) => {
                     return (
-                        <div key={statusIndex} className="p-4 flex flex-col gap-1 sm:gap-2">
-                            <p className="font-medium capitalize text-xs sm:text-sm">{status.replaceAll('_', ' ')}</p>
-                            <p className={`${fugaz.className} text-base sm:text-lg truncate flex items-center`}>{statuses[status]} {
+                        <div key={statusIndex} className="p-1 flex flex-col gap-1 sm:gap-2">
+                            <p className="font-medium capitalize truncate overflow-ellipsis text-xs sm:text-sm">{status.replaceAll('_', ' ')}</p>
+                            <p className={`${fugaz.className} truncate overflow-ellipsis text-base sm:text-lg flex items-center`}>{statuses[status]} {
                                 status === 'num_days' ? <Image className="w-5" width={500} height={0} src="/fire.gif" alt="fire-gif" /> : ''
                             }</p>
                         </div>

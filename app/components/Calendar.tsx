@@ -3,6 +3,7 @@
 import { gradients, baseRating, demoData } from "@/util";
 import { Fugaz_One } from "next/font/google";
 import { FC, useState } from "react";
+import { usePathname } from "next/navigation";
 
 interface PageProps {
     demo?: boolean;
@@ -19,6 +20,8 @@ const Calender: FC<PageProps> = ({ demo, completeData }) => {
     const currentMonth = now.getMonth();
     const [selectedMonth, setSelectedMonth] = useState(Object.keys(months)[currentMonth]);
     const [selectedYear, setSelectedYear] = useState(now.getFullYear());
+    const [isView, setIsView] = useState<boolean>(false);
+    const pathname = usePathname();
 
     // const year = 2024;
     // const month = 'August';
@@ -50,6 +53,21 @@ const Calender: FC<PageProps> = ({ demo, completeData }) => {
         }
     }
 
+    const handleView = () => {
+        setIsView(true);
+        const modal = document.getElementById('my_modal_1');
+        if (modal) {
+            (modal as HTMLDialogElement).showModal();
+        }
+    }
+
+    const handleNote = () => {
+        const modal = document.getElementById('my_modal_1');
+        if (modal) {
+            (modal as HTMLDialogElement).showModal();
+        }
+    }
+
     return (
         <div className="flex flex-col gap-4">
             <div className="grid grid-cols-5 gap-4">
@@ -61,6 +79,42 @@ const Calender: FC<PageProps> = ({ demo, completeData }) => {
                     <i className="fa-solid fa-circle-chevron-right"></i>
                 </button>
             </div>
+
+            <div className={`${fugaz.className} text-pink-500 grid grid-cols-7 gap-1 sm:pt-6 md:pt-10 pt-4`}>
+                {dayList.map((dayOfWeek: string, dayOfWeekIndex: number) => {
+                    return (
+                        <div key={dayOfWeekIndex} className="truncate overflow-ellipsis">{dayOfWeek}</div>
+                    );
+                })}
+            </div>
+
+
+            <dialog id="my_modal_1" className="modal">
+                <div className="modal-box w-11/12 max-w-5xl">
+                    {isView ? (
+                        <div>
+                            <h3 className="font-bold text-lg">View Mode</h3>
+                            <div className="modal-action">
+                                <form method="dialog">
+                                    <button onClick={
+                                        () => setIsView(false)
+                                    } className="btn">Close</button>
+                                </form>
+                            </div>
+                        </div>
+                    ) : (
+                        <div>
+                            <h3 className="font-bold text-lg">Note Mode</h3>
+                            <div className="modal-action">
+                                <form method="dialog">
+                                    <button className="btn">Close</button>
+                                </form>
+                            </div>
+
+                        </div>
+                    )}
+                </div>
+            </dialog>
 
             <div className="flex flex-col overflow-hidden gap-1 py-4 sm:py-6 md:py-10">
                 {[...Array(numRows).keys()].map((_, rowIndex: number) => {
@@ -85,10 +139,20 @@ const Calender: FC<PageProps> = ({ demo, completeData }) => {
                                     <div
                                         style={{ background: color }}
                                         key={dayOfWeekIndex}
-                                        className={`text-xs sm:text-sm border border-solid p-2 flex items-center gap-2 justify-between rounded-lg ${isToday ? 'border-pink-800' : 'border-pink-100'} ${color === 'white' ? 'text-pink-400' : 'text-white'
+                                        onClick={dayIndex in data ? (isToday ? handleNote : handleView) : undefined}
+                                        className={`${dayIndex in data ? 'hover:cursor-pointer' : 'hover:cursor-not-allowed'} text-xs sm:text-sm border border-solid p-2 flex items-center gap-2 justify-between rounded-lg ${isToday ? 'border-pink-800' : 'border-pink-100'} ${color === 'white' ? 'text-pink-400' : 'text-white'
                                             }`}
                                     >
                                         <p>{dayIndex}</p>
+
+                                        <div className={`${pathname === "/" ? "hidden" : "md:flex"} hidden hover:cursor-pointer`}>
+                                            {dayIndex in data && isToday ? (
+                                                <i onClick={handleNote} className="fa-solid fa-pencil"></i>
+                                            ) : (
+                                                dayIndex in data &&
+                                                <i onClick={handleView} className={`fa-solid fa-eye text-pink-200`}></i>
+                                            )}
+                                        </div>
                                     </div>
                                 );
                             })}
