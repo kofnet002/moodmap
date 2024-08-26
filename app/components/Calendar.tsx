@@ -4,7 +4,9 @@ import { gradients, baseRating, demoData } from "@/util";
 import { Fugaz_One } from "next/font/google";
 import { FC, useState } from "react";
 import { usePathname } from "next/navigation";
-import CKEditorView from "./CustomEditor";
+// import CKEditorView from "./CustomEditor";
+import dynamic from 'next/dynamic';
+
 interface PageProps {
     demo?: boolean;
     completeData: any;
@@ -15,6 +17,9 @@ const monthsArr = Object.keys(months);
 const now = new Date();
 const dayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const fugaz = Fugaz_One({ subsets: ["latin"], weight: ["400"] });
+
+const CKEditorView = dynamic(() => import('./CustomEditor'), { ssr: false });
+
 
 
 const Calender: FC<PageProps> = ({ demo, completeData }) => {
@@ -56,23 +61,49 @@ const Calender: FC<PageProps> = ({ demo, completeData }) => {
     }
 
     const handleView = () => {
-        setIsNote(false);
-        setIsView(true);
+        console.log('view')
+        // setIsNote(false);
+        // setIsView(true);
+        // const modal = document.getElementById('my_modal_1');
+        // if (modal) {
+        //     (modal as HTMLDialogElement).showModal();
+        // }
+    }
+
+    const handleNote = () => {
+        // const modal = document.getElementById('my_modal_1');
+        // if (modal) {
+        //     (modal as HTMLDialogElement).showModal();
+        // }
+        // setIsView(false);
+        // setIsNote(true);
+        console.log('note')
+
+    }
+
+    const handleModalOpen = (mode: string) => {
+        if (mode === 'view') {
+            setIsView(true);
+            setIsNote(false);
+        } else if (mode === 'note') {
+            setIsNote(true);
+            setIsView(false);
+        }
+
         const modal = document.getElementById('my_modal_1');
         if (modal) {
             (modal as HTMLDialogElement).showModal();
         }
-    }
+    };
 
-    const handleNote = () => {
-        setIsView(false);
-        setIsNote(true);
-        const modal = document.getElementById('my_modal_2');
+    const handleModalClose = () => {
+        const modal = document.getElementById('my_modal_1') as HTMLDialogElement;
         if (modal) {
-            (modal as HTMLDialogElement).showModal();
+            modal.close();
         }
-    }
-
+        setIsView(false);
+        setIsNote(false);
+    };
 
 
     return (
@@ -95,10 +126,32 @@ const Calender: FC<PageProps> = ({ demo, completeData }) => {
                 })}
             </div>
 
+            <dialog id="my_modal_1" className="modal">
+                <div className="modal-box w-11/12 max-w-5xl max-h-[80dvh]">
+                    {isView && (
+                        <>
+                            <h3 className={`${fugaz.className} font-bold text-lg`}>View Mode</h3>
+                            {/* Your content for View Mode */}
+                        </>
+                    )}
+                    {isNote && (
+                        <>
+                            <h3 className={`${fugaz.className} font-bold text-lg`}>Note Mode</h3>
+                            <CKEditorView
+                                data=""
+                                onChange={value => {
+                                    console.log(value);
+                                }}
+                            />
+                        </>
+                    )}
+                    <div className="modal-action">
+                        <button onClick={handleModalClose} className="btn">Close</button>
+                    </div>
+                </div>
+            </dialog>
 
-            {/* <dialog id="my_modal_1" className="modal"> */}
-            {/* <div className="modal-box w-11/12 max-w-5xl max-h-[80dvh]"> */}
-            {isView &&
+            {/* {isView &&
                 <dialog id="my_modal_1" className="modal">
                     <div className="modal-box w-11/12 max-w-5xl max-h-[80dvh]">
                         <h3 className={`${fugaz.className} font-bold text-lg`}>View Mode</h3>
@@ -113,8 +166,8 @@ const Calender: FC<PageProps> = ({ demo, completeData }) => {
                 </dialog>
             }
             {isNote &&
-                <div id="my_modal_2" className="modal">
-                    <div className="modal-box w-11/12 max-w-5xl max-h-[80dvh]">
+                <dialog id="my_modal_1" className="modal">
+                    <div className="modal-box w-11/12 max-w-5xl h-auto">
                         <h3 className={`${fugaz.className} font-bold text-lg`}>Note Mode</h3>
                         <CKEditorView
                             data=""
@@ -124,13 +177,11 @@ const Calender: FC<PageProps> = ({ demo, completeData }) => {
 
                         <div className="modal-action">
                             <form method="dialog">
-                                <button className="btn">Close</button>
+                                <button onClick={() => setIsNote(false)} className="btn">Close</button>
                             </form>
                         </div>
                     </div>
-                </div>}
-            {/* </div> */}
-            {/* </dialog> */}
+                </dialog>} */}
 
             <div className="flex flex-col overflow-hidden gap-1 py-4 sm:py-6 md:py-10">
                 {[...Array(numRows).keys()].map((_, rowIndex: number) => {
@@ -155,7 +206,7 @@ const Calender: FC<PageProps> = ({ demo, completeData }) => {
                                     <div
                                         style={{ background: color }}
                                         key={dayOfWeekIndex}
-                                        onClick={dayIndex in data ? (isToday ? handleNote : handleView) : undefined}
+                                        onClick={dayIndex in data ? (isToday ? () => handleModalOpen('note') : () => handleModalOpen('view')) : undefined}
                                         className={`${dayIndex in data ? 'hover:cursor-pointer' : 'hover:cursor-not-allowed'} text-xs sm:text-sm border border-solid p-2 flex items-center gap-2 justify-between rounded-lg ${isToday ? 'border-pink-800' : 'border-pink-100'} ${color === 'white' ? 'text-pink-400' : 'text-white'
                                             }`}
                                     >
@@ -163,10 +214,10 @@ const Calender: FC<PageProps> = ({ demo, completeData }) => {
 
                                         <div className={`${pathname === "/" ? "hidden" : "md:flex"} hidden hover:cursor-pointer`}>
                                             {dayIndex in data && isToday ? (
-                                                <i onClick={handleNote} className="fa-solid fa-pencil"></i>
+                                                <i onClick={() => handleModalOpen('note')} className="fa-solid fa-pencil"></i>
                                             ) : (
                                                 dayIndex in data &&
-                                                <i onClick={handleView} className={`fa-solid fa-eye text-pink-200`}></i>
+                                                <i onClick={() => handleModalOpen('view')} className={`fa-solid fa-eye text-pink-200`}></i>
                                             )}
                                         </div>
                                     </div>

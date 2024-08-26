@@ -50,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 let _firebaseData = {}
 
                 if (docSnap.exists()) {
-                    _firebaseData = docSnap.data()
+                    _firebaseData = docSnap.data()['mood']
                 }
                 setUserDataObj(_firebaseData)
             } catch (error) {

@@ -74,7 +74,6 @@ const Dashboard: FC<PageProps> = () => {
         const day = now.getDate()
         const month = now.getMonth()
         const year = now.getFullYear()
-
         try {
             const newData = { ...userDataObj }
             if (!newData?.[year]) {
@@ -92,12 +91,15 @@ const Dashboard: FC<PageProps> = () => {
             setUserDataObj(newData)
             // update firebase
             const docRef = doc(db, 'users', currentUser.uid)
-            const res = await setDoc(docRef, {
-                [year]: {
-                    [month]: {
-                        [day]: mood
+            await setDoc(docRef, {
+                'mood': {
+                    [year]: {
+                        [month]: {
+                            [day]: mood
+                        }
                     }
                 }
+
             }, { merge: true })
         } catch (error) {
             console.error("Failed to set data", error)
