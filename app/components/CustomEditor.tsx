@@ -397,7 +397,7 @@ export default function CKEditorView({ data, onChange }: Props) {
             {isLayoutReady && (
                 <CKEditor
                     editor={ClassicEditor}
-                    config={editorConfig}
+                    config={editorConfig as any}
                     data={data}
                     onChange={(event, editor) => {
                         const data = editor.getData();
