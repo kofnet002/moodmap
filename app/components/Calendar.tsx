@@ -4,7 +4,7 @@ import { gradients, baseRating, demoData } from "@/util";
 import { Fugaz_One } from "next/font/google";
 import { FC, useState } from "react";
 import { usePathname } from "next/navigation";
-
+import CKEditorView from "./CustomEditor";
 interface PageProps {
     demo?: boolean;
     completeData: any;
@@ -16,11 +16,13 @@ const now = new Date();
 const dayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const fugaz = Fugaz_One({ subsets: ["latin"], weight: ["400"] });
 
+
 const Calender: FC<PageProps> = ({ demo, completeData }) => {
     const currentMonth = now.getMonth();
     const [selectedMonth, setSelectedMonth] = useState(Object.keys(months)[currentMonth]);
     const [selectedYear, setSelectedYear] = useState(now.getFullYear());
     const [isView, setIsView] = useState<boolean>(false);
+    const [isNote, setIsNote] = useState<boolean>(false);
     const pathname = usePathname();
 
     // const year = 2024;
@@ -54,6 +56,7 @@ const Calender: FC<PageProps> = ({ demo, completeData }) => {
     }
 
     const handleView = () => {
+        setIsNote(false);
         setIsView(true);
         const modal = document.getElementById('my_modal_1');
         if (modal) {
@@ -62,11 +65,15 @@ const Calender: FC<PageProps> = ({ demo, completeData }) => {
     }
 
     const handleNote = () => {
-        const modal = document.getElementById('my_modal_1');
+        setIsView(false);
+        setIsNote(true);
+        const modal = document.getElementById('my_modal_2');
         if (modal) {
             (modal as HTMLDialogElement).showModal();
         }
     }
+
+
 
     return (
         <div className="flex flex-col gap-4">
@@ -89,32 +96,41 @@ const Calender: FC<PageProps> = ({ demo, completeData }) => {
             </div>
 
 
-            <dialog id="my_modal_1" className="modal">
-                <div className="modal-box w-11/12 max-w-5xl">
-                    {isView ? (
-                        <div>
-                            <h3 className="font-bold text-lg">View Mode</h3>
-                            <div className="modal-action">
-                                <form method="dialog">
-                                    <button onClick={
-                                        () => setIsView(false)
-                                    } className="btn">Close</button>
-                                </form>
-                            </div>
+            {/* <dialog id="my_modal_1" className="modal"> */}
+            {/* <div className="modal-box w-11/12 max-w-5xl max-h-[80dvh]"> */}
+            {isView &&
+                <dialog id="my_modal_1" className="modal">
+                    <div className="modal-box w-11/12 max-w-5xl max-h-[80dvh]">
+                        <h3 className={`${fugaz.className} font-bold text-lg`}>View Mode</h3>
+                        <div className="modal-action">
+                            <form method="dialog">
+                                <button onClick={
+                                    () => setIsView(false)
+                                } className="btn">Close</button>
+                            </form>
                         </div>
-                    ) : (
-                        <div>
-                            <h3 className="font-bold text-lg">Note Mode</h3>
-                            <div className="modal-action">
-                                <form method="dialog">
-                                    <button className="btn">Close</button>
-                                </form>
-                            </div>
+                    </div>
+                </dialog>
+            }
+            {isNote &&
+                <div id="my_modal_2" className="modal">
+                    <div className="modal-box w-11/12 max-w-5xl max-h-[80dvh]">
+                        <h3 className={`${fugaz.className} font-bold text-lg`}>Note Mode</h3>
+                        <CKEditorView
+                            data=""
+                            onChange={value => {
+                                console.log(value)
+                            }} />
 
+                        <div className="modal-action">
+                            <form method="dialog">
+                                <button className="btn">Close</button>
+                            </form>
                         </div>
-                    )}
-                </div>
-            </dialog>
+                    </div>
+                </div>}
+            {/* </div> */}
+            {/* </dialog> */}
 
             <div className="flex flex-col overflow-hidden gap-1 py-4 sm:py-6 md:py-10">
                 {[...Array(numRows).keys()].map((_, rowIndex: number) => {
